@@ -1941,8 +1941,7 @@ __webpack_require__.r(__webpack_exports__);
     var _this = this;
 
     Echo["private"]("messages.".concat(this.user.id)).listen('SendMessage', function (e) {
-      console.log(e.message);
-
+      // console.log(e.message);
       _this.handleIncoming(e.message);
     }); // console.log(this.user);
 
@@ -1957,6 +1956,8 @@ __webpack_require__.r(__webpack_exports__);
       axios.get("conversation/".concat(contact.id)).then(function (response) {
         _this2.messages = response.data;
         _this2.selectedContact = contact;
+
+        _this2.updateUnreadContact(contact, true);
       });
     },
     newMessage: function newMessage(message) {
@@ -1966,7 +1967,23 @@ __webpack_require__.r(__webpack_exports__);
     handleIncoming: function handleIncoming(message) {
       if (this.selectedContact && message.from === this.selectedContact.id) {
         this.newMessage(message);
+        return;
       }
+
+      console.log(message);
+      this.updateUnreadContact(message.from_contact, false);
+    },
+    updateUnreadContact: function updateUnreadContact(contact, reset) {
+      this.contacts = this.contacts.map(function (person) {
+        if (person.id !== contact.id) {
+          return person;
+        }
+
+        if (reset) person.unread = 0;else {
+          person.unread = person.unread + 1;
+        }
+        return person;
+      });
     }
   }
 });
@@ -1999,6 +2016,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "ContactList",
   props: {
@@ -2013,10 +2031,23 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
-    selectContact: function selectContact(index, contact) {
+    selectContact: function selectContact(contact) {
       // console.log(typeof contact);
-      this.selected = index;
+      this.selected = contact;
       this.$emit('selected', contact);
+    }
+  },
+  computed: {
+    sortedContacts: function sortedContacts() {
+      var _this = this;
+
+      return _.sortBy(this.contacts, [function (contact) {
+        if (_this.selected === contact) {
+          return Infinity;
+        }
+
+        return contact.unread;
+      }]).reverse();
     }
   }
 });
@@ -2145,12 +2176,19 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "MessageCompose",
   data: function data() {
     return {
       message: ''
     };
+  },
+  props: {
+    contact: {
+      type: Object,
+      "default": null
+    }
   },
   methods: {
     send: function send(e) {
@@ -2160,6 +2198,15 @@ __webpack_require__.r(__webpack_exports__);
         this.$emit('send', this.message);
         this.message = '';
       }
+    }
+  },
+  computed: {
+    isDisable: function isDisable() {
+      if (this.contact) {
+        return false;
+      }
+
+      return true;
     }
   }
 });
@@ -6627,7 +6674,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, ".contact-list[data-v-0ee8d67a] {\n  flex: 3;\n  max-height: 420px;\n  overflow-y: scroll;\n  border-left: 1px solid slateblue;\n}\nul[data-v-0ee8d67a] {\n  list-style: none;\n  padding-left: 0px;\n}\nli[data-v-0ee8d67a] {\n  display: flex;\n  border-bottom: 1px solid black;\n  position: relative;\n  height: 65px;\n  cursor: pointer;\n  padding: 4px 0px 0px 2px;\n}\nli.selected[data-v-0ee8d67a] {\n  background: #95c5ed;\n}\nli .avator[data-v-0ee8d67a] {\n  flex: 1;\n  display: flex;\n  align-items: center;\n}\nli .avator img[data-v-0ee8d67a] {\n  width: 40px;\n  border-radius: 50%;\n  margin: 0 auto;\n}\nli .contact[data-v-0ee8d67a] {\n  display: flex;\n  justify-content: center;\n  flex: 3;\n  overflow: hidden;\n  flex-direction: column;\n  font-size: 12px;\n}\nli .contact p[data-v-0ee8d67a] {\n  margin: 0;\n}\nli .contact p.name[data-v-0ee8d67a] {\n  font-weight: bold;\n}", ""]);
+exports.push([module.i, ".contact-list[data-v-0ee8d67a] {\n  flex: 3;\n  max-height: 420px;\n  overflow-y: scroll;\n  border-left: 1px solid slateblue;\n}\nul[data-v-0ee8d67a] {\n  list-style: none;\n  padding-left: 0px;\n}\nli[data-v-0ee8d67a] {\n  display: flex;\n  border-bottom: 1px solid black;\n  position: relative;\n  height: 65px;\n  cursor: pointer;\n  padding: 4px 0px 0px 2px;\n}\nli.selected[data-v-0ee8d67a] {\n  background: #95c5ed;\n}\nli span[data-v-0ee8d67a] {\n  background: #1d68a7;\n  color: #f8fafc;\n  position: absolute;\n  top: 15px;\n  right: 10px;\n  min-width: 20px;\n  border-radius: 40%;\n  display: flex;\n  justify-content: center;\n  padding: 3px;\n  font-size: 10px;\n}\nli .avator[data-v-0ee8d67a] {\n  flex: 1;\n  display: flex;\n  align-items: center;\n}\nli .avator img[data-v-0ee8d67a] {\n  width: 40px;\n  border-radius: 50%;\n  margin: 0 auto;\n}\nli .contact[data-v-0ee8d67a] {\n  display: flex;\n  justify-content: center;\n  flex: 3;\n  overflow: hidden;\n  flex-direction: column;\n  font-size: 12px;\n}\nli .contact p[data-v-0ee8d67a] {\n  margin: 0;\n}\nli .contact p.name[data-v-0ee8d67a] {\n  font-weight: bold;\n}", ""]);
 
 // exports
 
@@ -44616,15 +44663,15 @@ var render = function() {
   return _c("div", { staticClass: "contact-list" }, [
     _c(
       "ul",
-      _vm._l(_vm.contacts, function(contact, index) {
+      _vm._l(_vm.sortedContacts, function(contact) {
         return _c(
           "li",
           {
             key: contact.id,
-            class: { selected: index === _vm.selected },
+            class: { selected: contact === _vm.selected },
             on: {
               click: function($event) {
-                return _vm.selectContact(index, contact)
+                return _vm.selectContact(contact)
               }
             }
           },
@@ -44637,7 +44684,11 @@ var render = function() {
               _c("p", { staticClass: "name" }, [_vm._v(_vm._s(contact.name))]),
               _vm._v(" "),
               _c("p", {}, [_vm._v(_vm._s(contact.phone))])
-            ])
+            ]),
+            _vm._v(" "),
+            contact.unread
+              ? _c("span", [_vm._v(_vm._s(contact.unread))])
+              : _vm._e()
           ]
         )
       }),
@@ -44679,7 +44730,10 @@ var render = function() {
         attrs: { messages: _vm.messages, contact: _vm.contact }
       }),
       _vm._v(" "),
-      _c("message-compose", { on: { send: _vm.sendMessage } })
+      _c("message-compose", {
+        attrs: { contact: _vm.contact },
+        on: { send: _vm.sendMessage }
+      })
     ],
     1
   )
@@ -44763,7 +44817,7 @@ var render = function() {
           expression: "message"
         }
       ],
-      attrs: { placeholder: "enter message.." },
+      attrs: { placeholder: "enter message..", disabled: _vm.isDisable },
       domProps: { value: _vm.message },
       on: {
         keydown: function($event) {

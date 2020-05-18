@@ -1,6 +1,7 @@
 <template>
     <div class="composer">
-        <textarea v-model="message" @keydown.enter="send" placeholder="enter message.."></textarea>
+        <textarea v-model="message" @keydown.enter="send" placeholder="enter message.."
+        v-bind:disabled="isDisable"></textarea>
     </div>
 </template>
 
@@ -12,6 +13,12 @@
                 message:'',
             }
         },
+        props:{
+          contact:{
+              type: Object,
+              default: null,
+          }
+        },
         methods:{
             send(e){
                 e.preventDefault();
@@ -19,6 +26,14 @@
                     this.$emit('send', this.message);
                     this.message = ''
                 }
+            }
+        },
+        computed:{
+            isDisable(){
+                if (this.contact){
+                    return false;
+                }
+                return true;
             }
         }
     }

@@ -2,7 +2,7 @@
     <div class="conversation">
         <h1>{{contact ? contact.name : 'Select a Contact...'}}</h1>
         <message-area :messages="messages" :contact="contact"></message-area>
-        <message-compose @send="sendMessage"></message-compose>
+        <message-compose @send="sendMessage" :contact="contact"></message-compose>
     </div>
 </template>
 

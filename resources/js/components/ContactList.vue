@@ -1,8 +1,8 @@
 <template>
     <div class="contact-list">
         <ul>
-            <li v-for="(contact,index) in contacts" :key="contact.id" @click="selectContact(index, contact)"
-                :class="{'selected' : index === selected}">
+            <li v-for="(contact) in sortedContacts" :key="contact.id" @click="selectContact(contact)"
+                :class="{'selected' : contact === selected}">
                 <div class="avator">
                     <img :src="contact.image" :alt="contact.name">
                 </div>
@@ -10,6 +10,7 @@
                     <p class="name">{{contact.name}}</p>
                     <p class="">{{contact.phone}}</p>
                 </div>
+                <span v-if="contact.unread">{{contact.unread}}</span>
             </li>
         </ul>
     </div>
@@ -30,10 +31,20 @@
             }
         },
         methods:{
-            selectContact(index, contact){
+            selectContact(contact){
                 // console.log(typeof contact);
-                this.selected = index;
+                this.selected = contact;
                 this.$emit('selected', contact);
+            }
+        },
+        computed:{
+            sortedContacts(){
+                return _.sortBy(this.contacts, [(contact)=>{
+                    if (this.selected === contact){
+                        return Infinity;
+                    }
+                    return contact.unread
+                }]).reverse();
             }
         }
     }
@@ -59,6 +70,19 @@
         padding: 4px 0px 0px 2px;
         &.selected{
             background: #95c5ed;
+        }
+        span{
+            background: #1d68a7;
+            color: #f8fafc;
+            position: absolute;
+            top: 15px;
+            right: 10px;
+            min-width: 20px;
+            border-radius: 40%;
+            display: flex;
+            justify-content: center;
+            padding: 3px;
+            font-size: 10px;
         }
         .avator{
             flex: 1;

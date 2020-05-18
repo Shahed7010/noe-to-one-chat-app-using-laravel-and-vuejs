@@ -29,7 +29,7 @@
         mounted() {
             Echo.private(`messages.${this.user.id}`)
                 .listen('SendMessage', (e) => {
-                    console.log(e.message);
+                    // console.log(e.message);
                     this.handleIncoming(e.message)
                 })
             // console.log(this.user);
@@ -44,6 +44,7 @@
                 axios.get(`conversation/${contact.id}`).then(response =>{
                     this.messages = response.data;
                     this.selectedContact = contact;
+                    this.updateUnreadContact(contact, true)
                 })
             },
             newMessage(message){
@@ -53,7 +54,23 @@
             handleIncoming(message){
                 if (this.selectedContact && message.from === this.selectedContact.id){
                     this.newMessage(message);
+                    return;
                 }
+                console.log(message);
+                this.updateUnreadContact(message.from_contact, false)
+            },
+            updateUnreadContact(contact, reset){
+                this.contacts = this.contacts.map((person)=>{
+                    if (person.id !== contact.id){
+                        return person;
+                    }
+                    if (reset)
+                        person.unread = 0;
+                    else{
+                        person.unread = person.unread + 1;
+                    }
+                    return person;
+                })
             }
         }
 
