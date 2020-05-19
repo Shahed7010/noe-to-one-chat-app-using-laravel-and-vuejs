@@ -1,5 +1,6 @@
 <template>
     <div class="contact-list">
+        <input type="text" class="form-control" v-model="search" placeholder="search name..">
         <ul>
             <li v-for="(contact) in sortedContacts" :key="contact.id" @click="selectContact(contact)"
                 :class="{'selected' : contact === selected}">
@@ -28,6 +29,7 @@
         data(){
             return{
                 selected: null,
+                search:'',
             }
         },
         methods:{
@@ -39,12 +41,15 @@
         },
         computed:{
             sortedContacts(){
-                return _.sortBy(this.contacts, [(contact)=>{
+                var unreadContacts = _.sortBy(this.contacts, [(contact)=>{
                     if (this.selected === contact){
                         return Infinity;
                     }
                     return contact.unread
                 }]).reverse();
+                return unreadContacts.filter((contact)=>{
+                    return contact.name.toLowerCase().match(this.search.toLowerCase())
+                })
             }
         }
     }

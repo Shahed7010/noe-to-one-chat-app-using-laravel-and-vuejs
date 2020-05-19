@@ -21,7 +21,7 @@
         },
         data(){
             return{
-                selectedContact:'',
+                selectedContact:null,
                 contacts:[],
                 messages:[],
             }

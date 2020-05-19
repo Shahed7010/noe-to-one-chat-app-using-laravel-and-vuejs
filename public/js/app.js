@@ -1932,7 +1932,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
-      selectedContact: '',
+      selectedContact: null,
       contacts: [],
       messages: []
     };
@@ -2017,6 +2017,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "ContactList",
   props: {
@@ -2027,7 +2028,8 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
-      selected: null
+      selected: null,
+      search: ''
     };
   },
   methods: {
@@ -2041,13 +2043,17 @@ __webpack_require__.r(__webpack_exports__);
     sortedContacts: function sortedContacts() {
       var _this = this;
 
-      return _.sortBy(this.contacts, [function (contact) {
+      var unreadContacts = _.sortBy(this.contacts, [function (contact) {
         if (_this.selected === contact) {
           return Infinity;
         }
 
         return contact.unread;
       }]).reverse();
+
+      return unreadContacts.filter(function (contact) {
+        return contact.name.toLowerCase().match(_this.search.toLowerCase());
+      });
     }
   }
 });
@@ -44661,6 +44667,28 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "contact-list" }, [
+    _c("input", {
+      directives: [
+        {
+          name: "model",
+          rawName: "v-model",
+          value: _vm.search,
+          expression: "search"
+        }
+      ],
+      staticClass: "form-control",
+      attrs: { type: "text", placeholder: "search name.." },
+      domProps: { value: _vm.search },
+      on: {
+        input: function($event) {
+          if ($event.target.composing) {
+            return
+          }
+          _vm.search = $event.target.value
+        }
+      }
+    }),
+    _vm._v(" "),
     _c(
       "ul",
       _vm._l(_vm.sortedContacts, function(contact) {
