@@ -7,8 +7,8 @@
             <div class="card">
                 <div class="card-header">Chat App</div>
 
-                <div class="card-body" id="app">
-                    <chat-app :user="{{auth()->user()}}"></chat-app>
+                <div class="card-body" id="app" >
+                    <chat-app :user="{{auth()->user()}}" style="min-height: 400px"></chat-app>
                 </div>
             </div>
         </div>

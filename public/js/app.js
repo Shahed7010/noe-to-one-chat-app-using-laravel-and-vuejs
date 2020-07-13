@@ -2018,6 +2018,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "ContactList",
   props: {
@@ -2044,10 +2049,9 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       var unreadContacts = _.sortBy(this.contacts, [function (contact) {
-        if (_this.selected === contact) {
-          return Infinity;
-        }
-
+        // if (this.selected === contact){
+        //     return Infinity;
+        // }
         return contact.unread;
       }]).reverse();
 
@@ -6680,7 +6684,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, ".contact-list[data-v-0ee8d67a] {\n  flex: 3;\n  max-height: 420px;\n  overflow-y: scroll;\n  border-left: 1px solid slateblue;\n}\nul[data-v-0ee8d67a] {\n  list-style: none;\n  padding-left: 0px;\n}\nli[data-v-0ee8d67a] {\n  display: flex;\n  border-bottom: 1px solid black;\n  position: relative;\n  height: 65px;\n  cursor: pointer;\n  padding: 4px 0px 0px 2px;\n}\nli.selected[data-v-0ee8d67a] {\n  background: #95c5ed;\n}\nli span[data-v-0ee8d67a] {\n  background: #1d68a7;\n  color: #f8fafc;\n  position: absolute;\n  top: 15px;\n  right: 10px;\n  min-width: 20px;\n  border-radius: 40%;\n  display: flex;\n  justify-content: center;\n  padding: 3px;\n  font-size: 10px;\n}\nli .avator[data-v-0ee8d67a] {\n  flex: 1;\n  display: flex;\n  align-items: center;\n}\nli .avator img[data-v-0ee8d67a] {\n  width: 40px;\n  border-radius: 50%;\n  margin: 0 auto;\n}\nli .contact[data-v-0ee8d67a] {\n  display: flex;\n  justify-content: center;\n  flex: 3;\n  overflow: hidden;\n  flex-direction: column;\n  font-size: 12px;\n}\nli .contact p[data-v-0ee8d67a] {\n  margin: 0;\n}\nli .contact p.name[data-v-0ee8d67a] {\n  font-weight: bold;\n}", ""]);
+exports.push([module.i, ".search[data-v-0ee8d67a] {\n  margin-top: 22px;\n  border: 1px solid slateblue;\n}\n.contact-list[data-v-0ee8d67a] {\n  flex: 3;\n  max-height: 420px;\n  overflow-y: scroll;\n  border-left: 1px solid slateblue;\n}\nul[data-v-0ee8d67a] {\n  list-style: none;\n  padding-left: 0px;\n  min-height: 320px;\n}\nli[data-v-0ee8d67a] {\n  display: flex;\n  border-bottom: 1px solid black;\n  position: relative;\n  height: 65px;\n  cursor: pointer;\n  padding: 4px 0px 0px 2px;\n}\nli.selected[data-v-0ee8d67a] {\n  background: #95c5ed;\n}\nli span[data-v-0ee8d67a] {\n  background: #1d68a7;\n  color: #f8fafc;\n  position: absolute;\n  top: 15px;\n  right: 10px;\n  min-width: 20px;\n  border-radius: 40%;\n  display: flex;\n  justify-content: center;\n  padding: 3px;\n  font-size: 10px;\n}\nli .avator[data-v-0ee8d67a] {\n  flex: 1;\n  display: flex;\n  align-items: center;\n}\nli .avator img[data-v-0ee8d67a] {\n  width: 40px;\n  border-radius: 50%;\n  margin: 0 auto;\n}\nli .contact[data-v-0ee8d67a] {\n  display: flex;\n  justify-content: center;\n  flex: 3;\n  overflow: hidden;\n  flex-direction: column;\n  font-size: 12px;\n}\nli .contact p[data-v-0ee8d67a] {\n  margin: 0;\n}\nli .contact p.name[data-v-0ee8d67a] {\n  font-weight: bold;\n}", ""]);
 
 // exports
 
@@ -44666,7 +44670,7 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "contact-list" }, [
+  return _c("div", [
     _c("input", {
       directives: [
         {
@@ -44676,7 +44680,7 @@ var render = function() {
           expression: "search"
         }
       ],
-      staticClass: "form-control",
+      staticClass: "form-control search",
       attrs: { type: "text", placeholder: "search name.." },
       domProps: { value: _vm.search },
       on: {
@@ -44689,39 +44693,47 @@ var render = function() {
       }
     }),
     _vm._v(" "),
-    _c(
-      "ul",
-      _vm._l(_vm.sortedContacts, function(contact) {
-        return _c(
-          "li",
-          {
-            key: contact.id,
-            class: { selected: contact === _vm.selected },
-            on: {
-              click: function($event) {
-                return _vm.selectContact(contact)
-              }
-            }
-          },
-          [
-            _c("div", { staticClass: "avator" }, [
-              _c("img", { attrs: { src: contact.image, alt: contact.name } })
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "contact" }, [
-              _c("p", { staticClass: "name" }, [_vm._v(_vm._s(contact.name))]),
-              _vm._v(" "),
-              _c("p", {}, [_vm._v(_vm._s(contact.phone))])
-            ]),
-            _vm._v(" "),
-            contact.unread
-              ? _c("span", [_vm._v(_vm._s(contact.unread))])
-              : _vm._e()
-          ]
-        )
-      }),
-      0
-    )
+    _c("div", { staticClass: "contact-list" }, [
+      _vm.contacts.length > 0
+        ? _c(
+            "ul",
+            _vm._l(_vm.sortedContacts, function(contact) {
+              return _c(
+                "li",
+                {
+                  key: contact.id,
+                  class: { selected: contact === _vm.selected },
+                  on: {
+                    click: function($event) {
+                      return _vm.selectContact(contact)
+                    }
+                  }
+                },
+                [
+                  _c("div", { staticClass: "avator" }, [
+                    _c("img", {
+                      attrs: { src: contact.image, alt: contact.name }
+                    })
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "contact" }, [
+                    _c("p", { staticClass: "name" }, [
+                      _vm._v(_vm._s(contact.name))
+                    ]),
+                    _vm._v(" "),
+                    _c("p", {}, [_vm._v(_vm._s(contact.phone))])
+                  ]),
+                  _vm._v(" "),
+                  contact.unread
+                    ? _c("span", [_vm._v(_vm._s(contact.unread))])
+                    : _vm._e()
+                ]
+              )
+            }),
+            0
+          )
+        : _c("ul", [_c("li", [_vm._v("No Registered User")])])
+    ])
   ])
 }
 var staticRenderFns = []

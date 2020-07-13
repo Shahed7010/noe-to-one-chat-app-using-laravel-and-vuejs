@@ -1,7 +1,8 @@
 <template>
+    <div>
+        <input type="text" class="form-control search" v-model="search" placeholder="search name..">
     <div class="contact-list">
-        <input type="text" class="form-control" v-model="search" placeholder="search name..">
-        <ul>
+        <ul v-if="contacts.length>0">
             <li v-for="(contact) in sortedContacts" :key="contact.id" @click="selectContact(contact)"
                 :class="{'selected' : contact === selected}">
                 <div class="avator">
@@ -14,6 +15,10 @@
                 <span v-if="contact.unread">{{contact.unread}}</span>
             </li>
         </ul>
+        <ul v-else>
+            <li>No Registered User</li>
+        </ul>
+    </div>
     </div>
 </template>
 
@@ -42,9 +47,9 @@
         computed:{
             sortedContacts(){
                 var unreadContacts = _.sortBy(this.contacts, [(contact)=>{
-                    if (this.selected === contact){
-                        return Infinity;
-                    }
+                    // if (this.selected === contact){
+                    //     return Infinity;
+                    // }
                     return contact.unread
                 }]).reverse();
                 return unreadContacts.filter((contact)=>{
@@ -56,15 +61,21 @@
 </script>
 
 <style lang="scss" scoped>
+    .search{
+        margin-top: 22px;
+        border: 1px solid slateblue;
+    }
     .contact-list{
         flex: 3;
         max-height: 420px;
         overflow-y: scroll;
         border-left: 1px solid slateblue;
     }
+
     ul{
         list-style: none;
         padding-left: 0px;
+        min-height: 320px;
     }
     li{
         display: flex;
